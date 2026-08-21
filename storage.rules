@@ -1,0 +1,8 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Los documentos se gestionan únicamente con Admin SDK desde Cloud Functions.
+    // El cliente recibe URLs firmadas temporales después de validar su perfil en la base "thunder".
+    match /{allPaths=**} { allow read, write: if false; }
+  }
+}

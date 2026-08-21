@@ -1,0 +1,21 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "Pedidos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "Estado", "order": "ASCENDING" },
+        { "fieldPath": "FechaEntrega", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "Pedidos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "Estado", "order": "ASCENDING" },
+        { "fieldPath": "Saldo", "order": "ASCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

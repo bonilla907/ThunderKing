@@ -1,0 +1,100 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() { return request.auth != null; }
+    function userProfile() { return get(/databases/$(database)/documents/Usuarios/$(request.auth.uid)); }
+    function isActiveAdmin() { return isSignedIn() && userProfile().data.Activo == true && userProfile().data.Rol == 'Administrador'; }
+    function validOrder(data) {
+      return data.NumeroPedido is int
+        && data.ClienteId is string
+        && data.Cliente is map
+        && data.Cliente.Nombre is string
+        && data.Cliente.Nombre.size() > 0
+        && data.Cliente.Telefono is string
+        && data.Cliente.Telefono.matches('^[0-9]{10}$')
+        && data.FechaEntrega is timestamp
+        && data.Total is number && data.Total >= 0
+        && data.TotalPagado is number && data.TotalPagado >= 0
+        && data.TotalPagado <= data.Total
+        && data.Saldo == data.Total - data.TotalPagado
+        && data.Estado in ['pendiente', 'entregado', 'cancelado']
+        && ((data.Estado == 'pendiente' && data.Entregado == false && data.FechaEntregaReal == null)
+          || (data.Estado == 'entregado' && data.Entregado == true && data.FechaEntregaReal is timestamp)
+          || data.Estado == 'cancelado');
+    }
+    match /Usuarios/{userId} { allow read: if isActiveAdmin() && (request.auth.uid == userId || userProfile().data.Rol == 'Administrador'); allow write: if false; }
+    match /Configuracion/{documentId} { allow read, write: if isActiveAdmin(); }
+    match /WhatsAppLogs/{logId} { allow read: if isActiveAdmin(); allow write: if false; }
+    match /Clientes/{clienteId} {
+      allow read: if isActiveAdmin();
+      allow create, update: if isActiveAdmin()
+        && request.resource.data.Nombre is string
+        && request.resource.data.Nombre.size() > 0
+        && request.resource.data.Nombre.size() <= 150
+        && request.resource.data.Telefono is string
+        && request.resource.data.Telefono.matches('^[0-9]{10}$')
+        && request.resource.data.Activo == true;
+      allow delete: if false;
+    }
+    match /Contadores/Pedidos {
+      allow read: if isActiveAdmin();
+      allow create: if isActiveAdmin() && request.resource.data.UltimoNumero == 1001;
+      allow update: if isActiveAdmin()
+        && request.resource.data.UltimoNumero == resource.data.UltimoNumero + 1;
+      allow delete: if false;
+    }
+    match /Pedidos/{pedidoId} {
+      allow read: if isActiveAdmin();
+      allow create: if isActiveAdmin() && validOrder(request.resource.data)
+        && request.resource.data.CreadoPor == request.auth.uid;
+      allow update: if isActiveAdmin() && validOrder(request.resource.data)
+        && request.resource.data.NumeroPedido == resource.data.NumeroPedido
+        && request.resource.data.CreadoPor == resource.data.CreadoPor
+        && (
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['ClienteId', 'Cliente', 'FechaEntrega', 'Total', 'Saldo', 'FechaActualizacion'])
+          || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['TotalPagado', 'Saldo', 'FechaActualizacion'])
+          || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['Estado', 'Entregado', 'FechaEntregaReal', 'FechaActualizacion'])
+        );
+      allow delete: if false;
+
+      match /Conceptos/{conceptoId} {
+        allow read: if isActiveAdmin();
+        allow create, update: if isActiveAdmin()
+          && request.resource.data.Cantidad is number
+          && request.resource.data.Cantidad > 0
+          && request.resource.data.Descripcion is string
+          && request.resource.data.Descripcion.size() > 0
+          && request.resource.data.Descripcion.size() <= 500
+          && request.resource.data.PrecioUnitario is number
+          && request.resource.data.PrecioUnitario >= 0
+          && request.resource.data.Total is number
+          && request.resource.data.Total >= 0
+          && request.resource.data.Total >= request.resource.data.Cantidad * request.resource.data.PrecioUnitario - 0.01
+          && request.resource.data.Total <= request.resource.data.Cantidad * request.resource.data.PrecioUnitario + 0.01
+          && request.resource.data.Orden is int;
+        allow delete: if isActiveAdmin();
+      }
+
+      match /Pagos/{pagoId} {
+        allow read: if isActiveAdmin();
+        allow create: if isActiveAdmin()
+          && request.resource.data.Cantidad is number
+          && request.resource.data.Cantidad > 0
+          && request.resource.data.MetodoPago in ['Efectivo', 'Transferencia', 'Tarjeta', 'Otro']
+          && request.resource.data.Observaciones is string
+          && request.resource.data.UsuarioId == request.auth.uid
+          && request.resource.data.UsuarioNombre is string
+          && (
+            (!exists(/databases/$(database)/documents/Pedidos/$(pedidoId))
+              && getAfter(/databases/$(database)/documents/Pedidos/$(pedidoId)).data.TotalPagado == request.resource.data.Cantidad)
+            ||
+            (exists(/databases/$(database)/documents/Pedidos/$(pedidoId))
+              && getAfter(/databases/$(database)/documents/Pedidos/$(pedidoId)).data.TotalPagado
+                == get(/databases/$(database)/documents/Pedidos/$(pedidoId)).data.TotalPagado + request.resource.data.Cantidad)
+          );
+        allow update, delete: if false;
+      }
+    }
+    match /{document=**} { allow read, write: if false; }
+  }
+}

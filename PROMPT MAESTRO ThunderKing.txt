@@ -1,0 +1,1735 @@
+# PROMPT MAESTRO — SISTEMA DE GESTIÓN DE PEDIDOS PARA EMPRESA DE SERIGRAFÍA
+
+Quiero que desarrolles un sistema web completo para una empresa dedicada a servicios de **serigrafía, bordado, impresión de lonas, personalización de prendas y trabajos relacionados**.
+
+El sistema deberá construirse por **9 etapas claramente separadas**.
+
+## REGLA PRINCIPAL DE DESARROLLO
+
+Debes conocer desde el inicio toda la arquitectura y alcance descritos en este prompt, pero **NO debes implementar todas las etapas de golpe**.
+
+Debes trabajar exclusivamente sobre la etapa que yo indique.
+
+Cuando te solicite una etapa:
+
+1. Analiza primero la estructura existente del proyecto.
+2. Reutiliza componentes y lógica existente cuando corresponda.
+3. No elimines funcionalidades anteriores que ya estén funcionando.
+4. No avances a etapas posteriores.
+5. No agregues módulos futuros salvo la estructura mínima necesaria para evitar problemas de arquitectura.
+6. Mantén siempre compatibilidad con las etapas siguientes.
+7. Antes de terminar cada etapa, revisa imports, rutas, nombres de variables, estructura de Firebase y posibles errores.
+8. El código debe quedar funcional, limpio y listo para probar.
+9. No uses datos falsos si ya existe conexión con Firebase.
+10. Si falta algún dato externo imprescindible, deja claramente identificado dónde debe colocarse, sin inventarlo.
+
+---
+
+# 1. TECNOLOGÍAS
+
+El proyecto deberá utilizar principalmente:
+
+* React
+* JavaScript
+* Vite
+* React Router
+* Firebase Authentication
+* Cloud Firestore
+* Firebase Storage
+* Firebase Hosting
+* Firebase Cloud Functions 2nd Gen
+* Node.js 22 para Cloud Functions
+* Firebase Admin SDK
+* WhatsApp Business Platform / Cloud API
+
+Puedes utilizar librerías adicionales cuando tengan una justificación clara.
+
+Evita agregar dependencias innecesarias.
+
+El sistema deberá quedar preparado para crecer sin tener que rehacer la arquitectura principal.
+
+---
+
+# 2. CONFIGURACIÓN DEL PROYECTO
+
+## CREDENCIALES DE FIREBASE
+
+Dejar preparada la configuración para que yo proporcione mis credenciales.
+
+No inventes credenciales.
+
+Utiliza variables de entorno cuando sea apropiado.
+
+### Credenciales Firebase
+
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyBP7YG9MsTZGxdbW7EH3fetIdeLYJXUHnk",
+  authDomain: "thunder-king1.firebaseapp.com",
+  projectId: "thunder-king1",
+  storageBucket: "thunder-king1.firebasestorage.app",
+  messagingSenderId: "925826158469",
+  appId: "1:925826158469:web:cabaa5f4af00d4df9ebeec"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+```
+
+Si se requieren otros valores, indícalos.
+
+La configuración deberá centralizarse en un archivo similar a:
+
+```text
+src/firebase/firebaseConfig.js
+```
+
+o una estructura equivalente correctamente organizada.
+
+---
+
+# 3. WHATSAPP BUSINESS PLATFORM
+
+El proyecto utilizará posteriormente la API oficial:
+
+**WhatsApp Business Platform / Cloud API**
+
+No utilizar:
+
+* Automatizaciones de WhatsApp Web.
+* Selenium.
+* Librerías no oficiales que simulen sesiones.
+* Código que exponga tokens en React.
+
+Las credenciales de WhatsApp deberán utilizarse exclusivamente desde el backend mediante Firebase Cloud Functions.
+
+Preparar variables/secrets similares a:
+
+```text
+WHATSAPP_ACCESS_TOKEN
+WHATSAPP_PHONE_NUMBER_ID
+WHATSAPP_BUSINESS_ACCOUNT_ID
+WHATSAPP_API_VERSION
+```
+
+No inventar estos valores.
+
+Se proporcionarán posteriormente.
+
+---
+
+# 4. LOGO DE LA EMPRESA
+
+Deja preparado el proyecto para utilizar el logo real de la empresa.
+
+Yo proporcionaré el archivo posteriormente.
+
+### Logo
+
+```text
+[COLOCAR AQUÍ EL LOGO DE LA EMPRESA]
+```
+
+Debe existir una ubicación clara, por ejemplo:
+
+```text
+src/assets/logo/
+```
+
+El logo deberá utilizarse posteriormente en:
+
+* Login.
+* Sidebar o navbar.
+* Dashboard.
+* Nota de venta PDF.
+* Otras áreas donde visualmente tenga sentido.
+
+No crear un logo falso si todavía no he proporcionado el archivo.
+
+Mientras no exista, utiliza únicamente un placeholder discreto.
+
+---
+
+# 5. IDENTIDAD VISUAL
+
+La empresa utiliza principalmente una gama de colores **naranja intenso cercano al rojo**.
+
+La interfaz debe tomar esta identidad visual como base.
+
+La paleta debe transmitir:
+
+* Profesionalismo.
+* Energía.
+* Modernidad.
+* Claridad.
+* Buen contraste.
+
+Puedes partir conceptualmente de colores como:
+
+* Naranja rojizo.
+* Naranja intenso.
+* Rojo anaranjado.
+* Tonos neutros claros.
+* Tonos oscuros para texto.
+
+No debes saturar toda la aplicación de naranja.
+
+El color principal deberá utilizarse principalmente en:
+
+* Botones principales.
+* Elementos seleccionados.
+* Indicadores.
+* Badges.
+* Encabezados destacados.
+* Iconografía puntual.
+* Elementos de acción.
+
+Debe existir buen contraste y legibilidad.
+
+Centraliza los colores mediante variables CSS, theme o mecanismo equivalente para que puedan modificarse fácilmente después.
+
+---
+
+# 6. DISEÑO GENERAL
+
+El sistema deberá ser:
+
+* Moderno.
+* Limpio.
+* Profesional.
+* Fácil de utilizar.
+* Visualmente ordenado.
+* 100% responsivo.
+
+Debe funcionar correctamente en:
+
+* Computadoras.
+* Laptops.
+* Tablets.
+* Celulares.
+
+Evita una interfaz genérica o anticuada.
+
+Utiliza:
+
+* Cards.
+* Tablas adaptables.
+* Badges de estado.
+* Modales cuando sean útiles.
+* Formularios ordenados.
+* Íconos consistentes.
+* Espaciados adecuados.
+* Jerarquía visual clara.
+
+En móvil, las tablas que no funcionen correctamente deberán transformarse o adaptarse mediante cards, scroll controlado u otra solución responsiva.
+
+---
+
+# 7. ESTRUCTURA GENERAL
+
+El sistema administrará principalmente:
+
+* Usuarios.
+* Clientes.
+* Pedidos.
+* Conceptos del pedido.
+* Pagos.
+* Entregas.
+* PDFs.
+* WhatsApp.
+* Configuración de empresa.
+* Historiales.
+* Dashboard.
+
+---
+
+# 8. USUARIOS Y ROLES
+
+Inicialmente solo existirá:
+
+```text
+Administrador
+```
+
+Sin embargo, la arquitectura deberá quedar preparada para agregar posteriormente:
+
+```text
+Administrador
+Empleado
+Recepcion
+```
+
+No implementes todavía todos los permisos si la etapa actual no lo requiere.
+
+La colección podrá tener una estructura similar:
+
+```text
+Usuarios/{uid}
+```
+
+Ejemplo conceptual:
+
+```javascript
+{
+    Nombre: "Administrador",
+    Email: "admin@empresa.com",
+    Rol: "Administrador",
+    Activo: true,
+    FechaCreacion: Timestamp
+}
+```
+
+---
+
+# 9. CLIENTES
+
+Debe existir una colección:
+
+```text
+Clientes
+```
+
+Estructura sugerida:
+
+```javascript
+{
+    Nombre: "",
+    Telefono: "",
+    TelefonoWhatsApp: "",
+    FechaCreacion: Timestamp,
+    FechaActualizacion: Timestamp,
+    Activo: true
+}
+```
+
+Los clientes deberán poder reutilizarse en pedidos futuros.
+
+Evita crear clientes duplicados innecesariamente.
+
+La búsqueda deberá poder realizarse por:
+
+* Nombre.
+* Teléfono.
+
+---
+
+# 10. NORMALIZACIÓN DE TELÉFONO
+
+El sistema operará inicialmente en México.
+
+Los teléfonos que se envíen a WhatsApp deberán normalizarse con código de país.
+
+Ejemplo:
+
+```text
+7351234567
+```
+
+deberá convertirse en:
+
+```text
+527351234567
+```
+
+La función deberá ser reutilizable y no estar repetida en diferentes componentes.
+
+---
+
+# 11. PEDIDOS
+
+Todos los pedidos deberán almacenarse en una sola colección:
+
+```text
+Pedidos
+```
+
+NO crear colecciones separadas para:
+
+* Atrasados.
+* Hoy.
+* Próximos.
+* Pagados.
+* Saldo pendiente.
+
+La clasificación deberá realizarse mediante los datos del pedido.
+
+Estructura conceptual:
+
+```javascript
+{
+    NumeroPedido: 1001,
+
+    ClienteId: "",
+
+    Cliente: {
+        Nombre: "",
+        Telefono: "",
+        TelefonoWhatsApp: ""
+    },
+
+    FechaPedido: Timestamp,
+    FechaEntrega: Timestamp,
+
+    Estado: "pendiente",
+
+    Total: 0,
+    TotalPagado: 0,
+    Saldo: 0,
+
+    Entregado: false,
+    FechaEntregaReal: null,
+
+    PDF: {
+        Generado: false,
+        StoragePath: null
+    },
+
+    WhatsApp: {
+        Enviado: false,
+        FechaEnvio: null,
+        MessageId: null,
+        Error: null
+    },
+
+    CreadoPor: "",
+
+    FechaCreacion: Timestamp,
+    FechaActualizacion: Timestamp
+}
+```
+
+No guardar URLs públicas permanentes innecesariamente para documentos que contienen información del cliente.
+
+Preferir `StoragePath` y accesos controlados.
+
+---
+
+# 12. NÚMERO DE PEDIDO
+
+Cada pedido deberá tener un número único, amigable para el usuario.
+
+Ejemplo:
+
+```text
+1001
+1002
+1003
+```
+
+El mecanismo deberá evitar duplicados incluso si posteriormente existen múltiples usuarios creando pedidos.
+
+No utilizar únicamente el conteo de documentos desde React para generar el consecutivo.
+
+Debe diseñarse de manera segura.
+
+---
+
+# 13. CONCEPTOS DEL PEDIDO
+
+Cada pedido podrá contener múltiples conceptos.
+
+Utilizar:
+
+```text
+Pedidos/{pedidoId}/Conceptos
+```
+
+Cada concepto contendrá:
+
+```javascript
+{
+    Cantidad: 0,
+    Descripcion: "",
+    PrecioUnitario: 0,
+    Total: 0
+}
+```
+
+Cálculo:
+
+```text
+TotalConcepto = Cantidad × PrecioUnitario
+```
+
+Debe existir:
+
+```text
++ Agregar concepto
+```
+
+Y deberá permitirse:
+
+* Agregar.
+* Editar.
+* Eliminar.
+
+---
+
+# 14. REGISTRO DE NUEVO PEDIDO
+
+El formulario deberá contener:
+
+## Cliente
+
+* Nombre.
+* Teléfono.
+* Fecha del pedido automática.
+
+## Conceptos
+
+Columnas:
+
+```text
+Piezas
+Descripción
+Precio unitario
+Total
+```
+
+El total deberá calcularse automáticamente.
+
+## Resumen
+
+Mostrar:
+
+* Total.
+* Pago inicial.
+* Saldo pendiente.
+
+## Entrega
+
+Selector de:
+
+```text
+Fecha de entrega
+```
+
+## Acción
+
+Botón:
+
+```text
+Guardar Pedido
+```
+
+---
+
+# 15. PAGOS
+
+NO utilizar solamente un campo Anticipo.
+
+Cada pago deberá ser un registro independiente.
+
+Utilizar:
+
+```text
+Pedidos/{pedidoId}/Pagos
+```
+
+Estructura:
+
+```javascript
+{
+    Cantidad: 0,
+    MetodoPago: "",
+    Observaciones: "",
+    FechaPago: Timestamp,
+    UsuarioId: "",
+    UsuarioNombre: ""
+}
+```
+
+Métodos iniciales:
+
+```text
+Efectivo
+Transferencia
+Tarjeta
+Otro
+```
+
+---
+
+# 16. REGLA FINANCIERA
+
+La regla principal deberá ser siempre:
+
+```text
+Saldo = TotalPedido - TotalPagado
+```
+
+Donde:
+
+```text
+TotalPagado = suma de todos los registros de Pagos
+```
+
+No confiar únicamente en valores calculados por React.
+
+Cuando sea necesario, validar y recalcular desde backend.
+
+No permitir valores negativos o inconsistentes salvo que una regla futura explícitamente lo autorice.
+
+---
+
+# 17. HISTORIAL DE PAGOS
+
+En el detalle de cada pedido deberá mostrarse algo similar a:
+
+```text
+Pedido total: $3,000
+
+19/08/2026    $1,000    Efectivo
+21/08/2026      $500    Transferencia
+23/08/2026      $300    Tarjeta
+
+Total pagado: $1,800
+Saldo: $1,200
+```
+
+El historial no deberá eliminarse cuando se modifique el pedido.
+
+---
+
+# 18. EDICIÓN DEL PEDIDO
+
+Los pedidos podrán editarse.
+
+Se podrá modificar:
+
+* Cliente cuando corresponda.
+* Cantidad.
+* Descripción.
+* Precio.
+* Conceptos.
+* Fecha de entrega.
+
+Cuando cambien los conceptos:
+
+* Recalcular Total.
+* Mantener historial de pagos.
+* Recalcular saldo.
+
+Ejemplo:
+
+```text
+Pedido anterior: $3,000
+Pagado: $1,000
+
+Nuevo total: $3,500
+
+Nuevo saldo: $2,500
+```
+
+---
+
+# 19. CATEGORÍAS DE PEDIDOS
+
+Los pedidos pendientes deberán clasificarse automáticamente.
+
+No guardar estas categorías como si fueran estados independientes permanentes cuando puedan calcularse mediante fecha.
+
+## En proceso
+
+Código visual:
+
+```text
+en_proceso
+```
+
+Condición:
+
+```text
+más de 3 días para la entrega
+```
+
+## Próximos
+
+```text
+proximo
+```
+
+Condición:
+
+```text
+faltan entre 2 y 3 días
+```
+
+## Mañana
+
+```text
+manana
+```
+
+Condición:
+
+```text
+falta 1 día
+```
+
+## Entrega hoy
+
+```text
+hoy
+```
+
+Condición:
+
+```text
+fecha de entrega = fecha actual
+```
+
+## Atrasado
+
+```text
+atrasado
+```
+
+Condición:
+
+```text
+fecha de entrega < fecha actual
+y Estado = pendiente
+```
+
+La comparación deberá hacerse correctamente considerando zona horaria y evitando errores por horas/minutos.
+
+---
+
+# 20. ESTADOS REALES DEL PEDIDO
+
+El campo:
+
+```text
+Estado
+```
+
+podrá manejar inicialmente:
+
+```text
+pendiente
+entregado
+cancelado
+```
+
+Las categorías En proceso, Próximo, Mañana, Hoy y Atrasado son clasificaciones visuales derivadas de la fecha.
+
+---
+
+# 21. MÓDULO PEDIDOS
+
+Crear una sección con:
+
+```text
+En proceso
+Próximos
+Mañana
+Hoy
+Atrasados
+```
+
+Cada pedido deberá mostrar:
+
+* Número.
+* Cliente.
+* Fecha de entrega.
+* Total.
+* Pagado.
+* Saldo.
+* Indicador visual.
+
+Al seleccionar un pedido abrir su detalle.
+
+---
+
+# 22. PEDIDOS ATRASADOS
+
+Los pedidos atrasados deberán tener especial relevancia visual.
+
+Mostrar claramente:
+
+* Cuántos días lleva atrasado.
+* Cliente.
+* Teléfono.
+* Saldo.
+* Fecha de entrega.
+
+No utilizar colores de alerta de manera excesiva.
+
+---
+
+# 23. DETALLE DEL PEDIDO
+
+Mostrar:
+
+## Cliente
+
+* Nombre.
+* Teléfono.
+
+## Pedido
+
+* Número.
+* Fecha de creación.
+* Fecha de entrega.
+* Estado.
+* Categoría actual.
+
+## Conceptos
+
+* Cantidad.
+* Descripción.
+* Precio unitario.
+* Total.
+
+## Información financiera
+
+* Total.
+* Total pagado.
+* Saldo.
+
+El saldo deberá destacarse.
+
+## Historial de pagos
+
+Mostrar los pagos registrados.
+
+## Acciones
+
+Preparar:
+
+```text
+Editar pedido
+Registrar pago
+Ver nota
+Enviar por WhatsApp
+Terminar pedido
+```
+
+---
+
+# 24. TERMINAR PEDIDO
+
+Cuando se pulse:
+
+```text
+Terminar Pedido
+```
+
+el pedido deberá cambiar a:
+
+```javascript
+{
+    Estado: "entregado",
+    Entregado: true,
+    FechaEntregaReal: Timestamp
+}
+```
+
+Un pedido podrá terminarse incluso si todavía tiene saldo.
+
+---
+
+# 25. PEDIDOS ENTREGADOS
+
+Crear dos categorías:
+
+## Entregados y pagados
+
+Condición:
+
+```text
+Estado = entregado
+Saldo = 0
+```
+
+## Entregados con saldo pendiente
+
+Condición:
+
+```text
+Estado = entregado
+Saldo > 0
+```
+
+No mover documentos físicamente a diferentes colecciones.
+
+Filtrar los mismos documentos de `Pedidos`.
+
+---
+
+# 26. ABONOS DESPUÉS DE LA ENTREGA
+
+Los pedidos entregados con saldo pendiente deberán seguir aceptando pagos.
+
+Cuando:
+
+```text
+Saldo = 0
+```
+
+deberán aparecer automáticamente como:
+
+```text
+Entregado y pagado
+```
+
+sin intervención manual.
+
+---
+
+# 27. PDF / NOTA DE VENTA
+
+Cada pedido deberá poder generar una nota de venta profesional en PDF.
+
+La generación deberá realizarse desde backend.
+
+NO depender exclusivamente del navegador.
+
+Cloud Function sugerida:
+
+```text
+generarNotaVenta
+```
+
+---
+
+# 28. CONTENIDO DEL PDF
+
+Debe incluir:
+
+## Empresa
+
+* Logo.
+* Nombre.
+* Teléfono.
+* Dirección.
+* Redes sociales opcionales.
+
+## Pedido
+
+* Número.
+* Fecha.
+* Fecha de entrega.
+
+## Cliente
+
+* Nombre.
+* Teléfono.
+
+## Productos / servicios
+
+Tabla:
+
+```text
+Cantidad | Descripción | Precio unitario | Total
+```
+
+## Resumen
+
+* Total.
+* Pagado.
+* Saldo.
+
+El saldo debe destacarse.
+
+## Pie de página
+
+Debe quedar preparado para:
+
+* Políticas.
+* Información bancaria.
+* Condiciones.
+* Mensaje de agradecimiento.
+
+---
+
+# 29. FIREBASE STORAGE
+
+Guardar documentos aproximadamente bajo:
+
+```text
+pedidos/{pedidoId}/nota-venta-{NumeroPedido}.pdf
+```
+
+Guardar el `StoragePath` en Firestore.
+
+Evitar enlaces públicos permanentes cuando no sean necesarios.
+
+---
+
+# 30. CONFIGURACIÓN DE EMPRESA
+
+Utilizar algo similar a:
+
+```text
+Configuracion/Empresa
+```
+
+Ejemplo:
+
+```javascript
+{
+    Nombre: "",
+    Telefono: "",
+    Direccion: "",
+    LogoPath: "",
+    Facebook: "",
+    Instagram: "",
+    MensajeNota: "",
+    Moneda: "MXN"
+}
+```
+
+No escribir estos valores directamente en múltiples componentes.
+
+---
+
+# 31. WHATSAPP BUSINESS PLATFORM
+
+Se utilizará la API oficial de Meta.
+
+El flujo será:
+
+```text
+Pedido guardado
+↓
+Generar PDF
+↓
+Guardar PDF en Storage
+↓
+Cloud Function
+↓
+WhatsApp Business Platform
+↓
+Cliente recibe nota
+```
+
+---
+
+# 32. PLANTILLA DE WHATSAPP
+
+Preparar integración para una plantilla Utility similar a:
+
+```text
+confirmacion_pedido
+```
+
+Contenido conceptual:
+
+```text
+Hola {{1}} 👋
+
+Hemos registrado tu pedido #{{2}}.
+
+Fecha de entrega:
+{{3}}
+
+Total:
+${{4}}
+
+Pagado:
+${{5}}
+
+Saldo pendiente:
+${{6}}
+
+Adjuntamos la nota correspondiente a tu pedido.
+
+Gracias por tu compra.
+```
+
+No asumir que la plantilla ya se encuentra aprobada.
+
+Debe quedar fácil cambiar:
+
+* Nombre de plantilla.
+* Idioma.
+* Variables.
+* Phone Number ID.
+
+---
+
+# 33. ENVÍO DEL PDF POR WHATSAPP
+
+El objetivo final será que el cliente reciba automáticamente su nota de venta.
+
+Cloud Function sugerida:
+
+```text
+enviarNotaVentaWhatsApp(pedidoId)
+```
+
+Debe encargarse de:
+
+1. Obtener pedido.
+2. Obtener cliente.
+3. Obtener teléfono.
+4. Validar teléfono.
+5. Obtener PDF.
+6. Comunicarse con Cloud API.
+7. Enviar información.
+8. Registrar respuesta.
+9. Guardar `MessageId`.
+10. Manejar errores.
+
+---
+
+# 34. REENVÍO
+
+En el detalle deberá existir:
+
+```text
+Enviar nuevamente por WhatsApp
+```
+
+No debe duplicar pedidos.
+
+Solo deberá generar o recuperar el documento correspondiente y reenviarlo.
+
+---
+
+# 35. MANEJO DE ERROR DE WHATSAPP
+
+Nunca revertir un pedido correctamente guardado solamente porque falle WhatsApp.
+
+Ejemplo:
+
+```text
+Pedido: guardado
+PDF: generado
+WhatsApp: error
+```
+
+El sistema deberá indicar:
+
+```text
+El pedido se guardó correctamente, pero no fue posible enviar la nota por WhatsApp.
+```
+
+Mostrar:
+
+```text
+Reintentar envío
+```
+
+---
+
+# 36. LOGS DE WHATSAPP
+
+Crear:
+
+```text
+WhatsAppLogs
+```
+
+Ejemplo:
+
+```javascript
+{
+    PedidoId: "",
+    NumeroPedido: 0,
+    ClienteId: "",
+    Telefono: "",
+    Tipo: "nota_venta",
+    Estado: "enviado",
+    MessageId: "",
+    Fecha: Timestamp,
+    Error: null
+}
+```
+
+No guardar tokens ni secretos dentro del log.
+
+---
+
+# 37. DASHBOARD
+
+El Dashboard deberá mostrar indicadores como:
+
+* Pedidos en proceso.
+* Próximos.
+* Entrega mañana.
+* Entrega hoy.
+* Atrasados.
+* Pedidos entregados.
+* Pedidos con saldo pendiente.
+* Total pendiente por cobrar.
+
+Los indicadores deberán poder llevar al usuario a la sección correspondiente cuando tenga sentido.
+
+---
+
+# 38. BÚSQUEDA
+
+Permitir búsqueda por:
+
+* Número de pedido.
+* Nombre del cliente.
+* Teléfono.
+
+Preparar la arquitectura para agregar posteriormente filtros por:
+
+* Fecha.
+* Estado.
+* Sucursal.
+* Usuario.
+* Saldo.
+* Rango de fechas.
+
+---
+
+# 39. HISTORIAL DE ACCIONES
+
+Preparar estructura para poder registrar posteriormente:
+
+* Pedido creado.
+* Pedido editado.
+* Pago registrado.
+* Pedido terminado.
+* PDF generado.
+* WhatsApp enviado.
+* WhatsApp fallido.
+* Pedido cancelado.
+
+Podrá utilizarse una subcolección:
+
+```text
+Pedidos/{pedidoId}/Historial
+```
+
+No implementar toda la auditoría desde la primera etapa si todavía no corresponde.
+
+---
+
+# 40. SEGURIDAD
+
+Implementar reglas adecuadas de Firebase.
+
+No dejar Firestore abierto con reglas como:
+
+```text
+allow read, write: if true;
+```
+
+en producción.
+
+La arquitectura deberá considerar:
+
+* Firebase Authentication.
+* UID.
+* Rol.
+* Estado activo del usuario.
+
+Operaciones sensibles deberán realizarse desde backend cuando corresponda.
+
+---
+
+# 41. CLOUD FUNCTIONS
+
+Funciones previstas:
+
+```text
+crearPedido
+registrarPago
+actualizarPedido
+terminarPedido
+generarNotaVenta
+enviarNotaVentaWhatsApp
+reenviarNotaVentaWhatsApp
+```
+
+No es obligatorio implementar todas desde el principio.
+
+Implementarlas únicamente en la fase correspondiente.
+
+---
+
+# 42. ESCALABILIDAD
+
+El sistema deberá quedar preparado para agregar posteriormente:
+
+* Varias sucursales.
+* Varios administradores.
+* Empleados.
+* Recepción.
+* Catálogo de servicios.
+* Inventario.
+* Cotizaciones.
+* Conversión de cotización a pedido.
+* Reportes.
+* Estadísticas.
+* Notificaciones automáticas.
+* Mensajes de pedido listo.
+* Recordatorios de saldo.
+* Reportes PDF.
+* Reportes Excel.
+
+No implementar estas características anticipadamente salvo la estructura estrictamente necesaria.
+
+---
+
+# 43. ETAPAS DE DESARROLLO
+
+El proyecto se desarrollará en exactamente estas etapas generales.
+
+---
+
+## ETAPA 1 — BASE DEL SISTEMA
+
+Implementar:
+
+* Proyecto React + Vite.
+* Estructura organizada.
+* Firebase.
+* Variables de entorno.
+* Firebase Authentication.
+* Login.
+* Usuario administrador.
+* Rutas protegidas.
+* Layout principal.
+* Sidebar/navbar.
+* Diseño responsive.
+* Identidad visual naranja rojizo.
+* Preparación del logo.
+* Configuración de empresa base.
+* Logout.
+* Manejo inicial de errores.
+
+Menú inicial preparado para:
+
+```text
+Dashboard
+Nuevo Pedido
+Pedidos
+Entregados
+Clientes
+Configuración
+```
+
+No implementar todavía la lógica completa de esos módulos.
+
+---
+
+## ETAPA 2 — CLIENTES Y PEDIDOS
+
+Implementar:
+
+* Colección Clientes.
+* Alta de cliente.
+* Búsqueda.
+* Reutilización de clientes.
+* Nuevo pedido.
+* Número de pedido.
+* Múltiples conceptos.
+* Agregar concepto.
+* Editar concepto.
+* Eliminar concepto.
+* Cantidad.
+* Descripción.
+* Precio.
+* Total automático.
+* Total general.
+* Fecha de entrega.
+* Guardado en Firestore.
+* Detalle básico.
+* Edición de pedido.
+
+---
+
+## ETAPA 3 — PAGOS
+
+Implementar:
+
+* Pago inicial.
+* Subcolección Pagos.
+* Métodos de pago.
+* Registrar nuevos abonos.
+* Historial.
+* Total pagado.
+* Saldo.
+* Validaciones financieras.
+* Pagos en pedidos activos.
+* Pagos posteriores.
+* Actualización automática del saldo.
+
+---
+
+## ETAPA 4 — GESTIÓN DE PEDIDOS
+
+Implementar:
+
+```text
+En proceso
+Próximos
+Mañana
+Hoy
+Atrasados
+```
+
+Agregar:
+
+* Cálculo automático por fechas.
+* Cards/listados.
+* Badges.
+* Búsqueda.
+* Detalle completo.
+* Días restantes.
+* Días atrasados.
+* Filtros necesarios.
+
+---
+
+## ETAPA 5 — ENTREGAS
+
+Implementar:
+
+* Terminar pedido.
+* Fecha real de entrega.
+* Entregados pagados.
+* Entregados con saldo.
+* Continuar registrando pagos después de entregar.
+* Cambio automático a pagado cuando saldo llegue a cero.
+
+---
+
+## ETAPA 6 — PDF
+
+Implementar:
+
+* Cloud Function.
+* Generación de nota de venta.
+* Diseño profesional.
+* Logo.
+* Datos de empresa.
+* Datos de cliente.
+* Conceptos.
+* Pagos.
+* Total.
+* Saldo.
+* Guardado en Storage.
+* Visualización desde el sistema.
+* Descarga controlada.
+* Regeneración cuando sea necesario.
+
+---
+
+## ETAPA 7 — WHATSAPP BUSINESS PLATFORM
+
+Implementar:
+
+* Secrets.
+* Configuración Cloud API.
+* Plantilla Utility.
+* Integración con Meta.
+* Envío del PDF.
+* Mensaje de confirmación.
+* Message ID.
+* Logs.
+* Errores.
+* Reintentos.
+* Botón reenviar.
+* Normalización del teléfono.
+* Seguridad.
+
+---
+
+## ETAPA 8 — DASHBOARD
+
+Implementar:
+
+* Pedidos en proceso.
+* Próximos.
+* Mañana.
+* Hoy.
+* Atrasados.
+* Entregados.
+* Saldo pendiente.
+* Total pendiente por cobrar.
+* Accesos rápidos.
+* Indicadores visuales.
+* Diseño responsive.
+
+No realizar lecturas excesivas de Firestore.
+
+Optimizar consultas.
+
+---
+
+## ETAPA 9 — SEGURIDAD, OPTIMIZACIÓN Y PRUEBAS
+
+Realizar revisión completa:
+
+* Firebase Rules.
+* Storage Rules.
+* Authentication.
+* Roles.
+* Cloud Functions.
+* Manejo de secretos.
+* Validaciones.
+* Errores.
+* Fechas.
+* Zona horaria.
+* Cálculos.
+* Firestore indexes.
+* Lecturas innecesarias.
+* Escrituras innecesarias.
+* Responsividad.
+* Formularios.
+* Navegación.
+* PDFs.
+* WhatsApp.
+* Código duplicado.
+* Imports.
+* Console errors.
+* Build.
+* Pruebas generales.
+
+Preparar además la arquitectura para futuros roles:
+
+```text
+Administrador
+Empleado
+Recepcion
+```
+
+---
+
+# 44. REGLAS PARA CADA ETAPA
+
+Cuando te indique:
+
+```text
+Vamos con la ETAPA X
+```
+
+deberás:
+
+1. Revisar primero los archivos existentes.
+2. Entender qué etapas ya están terminadas.
+3. Conservar lo que funciona.
+4. Implementar solamente la etapa solicitada.
+5. No rehacer el proyecto desde cero.
+6. No modificar nombres arbitrariamente.
+7. Mantener compatibilidad con Firebase existente.
+8. Revisar errores antes de finalizar.
+9. Ejecutar build o validaciones disponibles.
+10. Corregir errores encontrados.
+11. Indicar brevemente qué archivos principales modificaste.
+12. Indicar cualquier configuración externa que yo deba realizar.
+
+---
+
+# 45. NO HACER
+
+No debes:
+
+* Implementar las 9 etapas de golpe.
+* Crear datos ficticios innecesarios.
+* Inventar credenciales.
+* Exponer tokens.
+* Guardar secretos en React.
+* Utilizar WhatsApp Web automatizado.
+* Reemplazar Firebase por otra tecnología.
+* Crear colecciones diferentes para cada categoría de pedido.
+* Eliminar pagos históricos al editar pedidos.
+* Calcular saldos de forma inconsistente.
+* Depender únicamente de cálculos del frontend.
+* Utilizar un diseño fijo que falle en celular.
+* Crear código duplicado si puede convertirse en función o componente reutilizable.
+* Reescribir partes funcionales sin motivo.
+* Ignorar errores de consola o build.
+
+---
+
+# 46. CALIDAD DEL CÓDIGO
+
+Quiero código:
+
+* Claro.
+* Modular.
+* Mantenible.
+* Reutilizable.
+* Fácil de entender.
+* Consistente.
+* Escalable.
+
+Utiliza nombres descriptivos.
+
+No compliques innecesariamente la arquitectura.
+
+Prioriza soluciones claras y robustas.
+
+---
+
+# 47. EXPERIENCIA DE USUARIO
+
+Agregar cuando corresponda:
+
+* Loading states.
+* Skeletons o spinners discretos.
+* Botones deshabilitados durante procesos.
+* Mensajes de éxito.
+* Mensajes de error.
+* Confirmación en operaciones delicadas.
+* Estados vacíos.
+* Validaciones visibles.
+* Formato monetario MXN.
+* Fechas legibles.
+* Feedback inmediato.
+
+Evitar que el usuario pueda enviar dos veces el mismo formulario por doble clic.
+
+---
+
+# 48. FORMATO MONETARIO
+
+La moneda inicial será:
+
+```text
+MXN
+```
+
+Mostrar valores, por ejemplo:
+
+```text
+$1,250.00
+```
+
+Mantener internamente valores numéricos correctos y evitar errores por strings.
+
+---
+
+# 49. FECHAS
+
+Utilizar correctamente:
+
+```text
+Firebase Timestamp
+```
+
+cuando corresponda.
+
+No guardar fechas críticas únicamente como strings formateados.
+
+La aplicación se utilizará inicialmente en México.
+
+Considerar correctamente la zona horaria.
+
+---
+
+# 50. OBJETIVO DEL FLUJO
+
+La prioridad del sistema es que el siguiente flujo sea sólido:
+
+```text
+Cliente
+↓
+Pedido
+↓
+Conceptos
+↓
+Pago inicial
+↓
+Guardar
+↓
+Producción
+↓
+Seguimiento por fecha
+↓
+Entrega
+↓
+Saldo pendiente o pagado
+↓
+Abonos posteriores
+↓
+Liquidación
+```
+
+Después:
+
+```text
+Pedido
+↓
+PDF
+↓
+WhatsApp Business Platform
+↓
+Cliente recibe nota de venta
+```
+
+---
+
+# 51. DATOS QUE YO PROPORCIONARÉ
+
+Antes o durante las fases correspondientes proporcionaré:
+
+## Firebase
+
+```text
+VITE_FIREBASE_API_KEY=
+VITE_FIREBASE_AUTH_DOMAIN=
+VITE_FIREBASE_PROJECT_ID=
+VITE_FIREBASE_STORAGE_BUCKET=
+VITE_FIREBASE_MESSAGING_SENDER_ID=
+VITE_FIREBASE_APP_ID=
+```
+
+## Logo
+
+```text
+[ARCHIVO DEL LOGO]
+```
+
+## Datos de empresa
+
+```text
+Nombre:
+Teléfono:
+Dirección:
+Facebook:
+Instagram:
+Mensaje para nota:
+```
+
+## WhatsApp Business Platform
+
+Posteriormente proporcionaré/configuraré:
+
+```text
+Access Token
+Phone Number ID
+WhatsApp Business Account ID
+Plantilla aprobada
+Idioma de plantilla
+```
+
+Nunca inventes estos datos.
+
+---
+
+# 52. PRIMERA INSTRUCCIÓN
+
+Después de recibir este prompt:
+
+1. Analiza todo el alcance.
+2. No implementes todavía las 9 etapas.
+3. Confirma internamente la arquitectura.
+4. Trabaja exclusivamente en la etapa que te indique.
+
+Cuando yo escriba:
+
+```text
+INICIA ETAPA 1
+```
+
+deberás comenzar exclusivamente con:
+
+**ETAPA 1 — BASE DEL SISTEMA**
+
+y dejarla completamente funcional antes de avanzar.
